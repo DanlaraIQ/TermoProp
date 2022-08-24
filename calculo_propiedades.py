@@ -56,6 +56,94 @@ def peng_robinson(compuesto, temperatura, presion):
     return Z_vapor, Z_liquido, A, B, m, alpha
 
 
+def soave_redlich_kwong(compuesto, temperatura, presion):
+    '''
+    Esta función emplea la ecuación de Peng-Robinson para realizar el cálculo del factor de compresibilidad de líquido
+    y vapor para el componente seleccionado además produce como salidas otras variables Termodinamicas que son útiles
+    para diversos cálculos
+    '''
+    T_c = bd.propiedades[compuesto][6]
+    P_c = bd.propiedades[compuesto][7]
+    fac_ace = bd.propiedades[compuesto][11]
+    T_r = temperatura / T_c
+    P_r = presion / P_c
+    m = 0.48 + 1.574 * fac_ace - 0.176 * fac_ace**2
+    alpha = (1 + m * (1 - math.sqrt(T_r)))**2
+    A = 0.42748 * (P_r / T_r**2) * alpha
+    B = 0.08664 * (P_r / T_r)
+
+    polinomio = [1, -1 + B, A - 2 * B - 3 * B**2, -A * B + B**2 + B**3]
+    sol_Z = np.roots(polinomio)
+    Z = []
+    for i in range(len(sol_Z)):
+        if np.isreal(sol_Z[i]) == 1:
+            Z.append(sol_Z[i].real)
+    if len(Z) == 3:
+        Z_vapor = max(Z)
+        Z_liquido = min(Z)
+    elif len(Z) == 2:
+        Z_vapor = max(Z)
+        Z_liquido = min(Z)
+    elif len(Z) == 1:
+        Z_vapor = max(Z)
+        Z_liquido = None
+    else:
+        print("No se encontraron raíces positivas")
+    return Z_vapor, Z_liquido, A, B, m, alpha
+
+
+def cal_volEsp_tabla(compuesto, temperatura, presion, cte_R):
+    '''
+    Esta función calcula el volumen específico del líquido y vapor en metros cúbicos por kilogramo.
+    '''
+    peso_molecular = bd.propiedades[compuesto][5]
+    Z_vapor, Z_liquido, A, B, m, alpha = peng_robinson(compuesto, temperatura, presion)
+    if Z_liquido == None:
+        volumen_especifico_vapor = (Z_vapor * cte_R * temperatura / presion) * (1000 / peso_molecular)
+        volumen_especifico_liquido = "No hay líquido"
+        return volumen_especifico_vapor, volumen_especifico_liquido
+    else:
+        volumen_especifico_liquido = (Z_liquido * cte_R * temperatura / presion) * (1000 / peso_molecular)
+        volumen_especifico_vapor = (Z_vapor * cte_R * temperatura / presion) * (1000 / peso_molecular)
+        return volumen_especifico_vapor, volumen_especifico_liquidoç
+
+
+def redlich_kwong(compuesto, temperatura, presion):
+    '''
+    Esta función emplea la ecuación de Peng-Robinson para realizar el cálculo del factor de compresibilidad de líquido
+    y vapor para el componente seleccionado además produce como salidas otras variables Termodinamicas que son útiles
+    para diversos cálculos
+    '''
+    T_c = bd.propiedades[compuesto][6]
+    P_c = bd.propiedades[compuesto][7]
+    fac_ace = bd.propiedades[compuesto][11]
+    T_r = temperatura / T_c
+    P_r = presion / P_c
+    m = None
+    alpha = None
+    A = 0.42748 * (P_r / T_r**2) * alpha
+    B = 0.08664 * (P_r / T_r)
+
+    polinomio = [1, -1 + B, A - 2 * B - 3 * B**2, -A * B + B**2 + B**3]
+    sol_Z = np.roots(polinomio)
+    Z = []
+    for i in range(len(sol_Z)):
+        if np.isreal(sol_Z[i]) == 1:
+            Z.append(sol_Z[i].real)
+    if len(Z) == 3:
+        Z_vapor = max(Z)
+        Z_liquido = min(Z)
+    elif len(Z) == 2:
+        Z_vapor = max(Z)
+        Z_liquido = min(Z)
+    elif len(Z) == 1:
+        Z_vapor = max(Z)
+        Z_liquido = None
+    else:
+        print("No se encontraron raíces positivas")
+    return Z_vapor, Z_liquido, A, B, m, alpha
+
+
 def cal_volEsp_tabla(compuesto, temperatura, presion, cte_R):
     '''
     Esta función calcula el volumen específico del líquido y vapor en metros cúbicos por kilogramo.

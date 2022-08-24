@@ -69,7 +69,9 @@ if tipo == False:
     print("La entropia de evaporación es: {:.4f}".format(entropia_vaporicacion), " kJ/kg-K")
     print("La entropia del vapor es: {:.4f}".format(entropia_vapor), " kJ/kg-K")
 elif tipo == True:
-    val_temp = [273 - 90, 200, 230, 260, 290, 320, 350, 273 + 90] # np.linspace(temperatura_inicial, temperatura_final, numero_valores_intermedios)
+    #
+    val_temp = np.linspace(temperatura_inicial, temperatura_final,
+                           numero_valores_intermedios)  # [183, 213, 243, 273, 303, 333, 363]
     tabla_propiedades = np.zeros([len(val_temp), len(propTer)])
     # tabla_propiedades[0, :] = np.asarray(propTer).copy()
     for i in range(len(val_temp)):
@@ -96,16 +98,16 @@ elif tipo == True:
 
     # Gráfica de temperatura-presion
     plt.plot(tabla_propiedades[:, 0], tabla_propiedades[:, 1])
-    plt.xlabel("Temperatura, [K]")
-    plt.ylabel("Presión, [bar]")
+    plt.xlabel("Temperatura, [K]", fontsize=16)
+    plt.ylabel("Presión, [bar]", fontsize=16)
     plt.savefig("P_T" + compuesto + ".pdf")
     plt.clf()
 
     # Gráfica de temperatura-volumen de vapor
     plt.plot(tabla_propiedades[:, 0], tabla_propiedades[:, 2])
     plt.plot(tabla_propiedades[:, 0], tabla_propiedades[:, 3])
-    plt.xlabel("Temperatura, [K]")
-    plt.ylabel("Volumen específico, [m^3/kg]")
+    plt.xlabel("Temperatura, [K]", fontsize=16)
+    plt.ylabel("Volumen específico, [m^3/kg]", fontsize=16)
     plt.legend(["Líquido", "Vapor"])
     plt.savefig("V_T" + compuesto + ".pdf")
     plt.clf()
@@ -113,17 +115,17 @@ elif tipo == True:
     # Gráfica de temperatura-energía interna
     plt.plot(tabla_propiedades[:, 0], tabla_propiedades[:, 4])
     plt.plot(tabla_propiedades[:, 0], tabla_propiedades[:, 6])
-    plt.xlabel("Temperatura, [K]")
-    plt.ylabel("Energía interna, [kJ/kg]")
-    plt.legend(["Líquido", "Vapor"])
+    plt.xlabel("Temperatura, [K]", fontsize=16)
+    plt.ylabel("Energía interna, [kJ/kg]", fontsize=16)
+    plt.legend(["Líquido", "Vapor"], fontsize=16)
     plt.savefig("U_T" + compuesto + ".pdf")
     plt.clf()
 
     # Gráfica de temperatura-entalpía
     plt.plot(tabla_propiedades[:, 0], tabla_propiedades[:, 7])
     plt.plot(tabla_propiedades[:, 0], tabla_propiedades[:, 9])
-    plt.xlabel("Temperatura, [K]")
-    plt.ylabel("Entalpía, [kJ/kg]")
+    plt.xlabel("Temperatura, [K]", fontsize=16)
+    plt.ylabel("Entalpía, [kJ/kg]", fontsize=16)
     plt.legend(["Líquido", "Vapor"])
     plt.savefig("H_T" + compuesto + ".pdf")
     plt.clf()
@@ -131,7 +133,7 @@ elif tipo == True:
     # Gráfica de temperatura-entropía
     plt.plot(tabla_propiedades[:, 0], tabla_propiedades[:, 10])
     plt.plot(tabla_propiedades[:, 0], tabla_propiedades[:, 12])
-    plt.xlabel("Temperatura, [K]")
-    plt.ylabel("Entropía, [kJ/kg-K]")
+    plt.xlabel("Temperatura, [K]", fontsize=16)
+    plt.ylabel("Entropía, [kJ/kg-K]", fontsize=16)
     plt.legend(["Líquido", "Vapor"])
     plt.savefig("S_T" + compuesto + ".pdf")
